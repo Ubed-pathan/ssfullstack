@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "react-bootstrap-icons";
 
 function Pagination() {
-  const [students, setStudents] = useState([
+  const [students] = useState([
     { id: 1, name: "Paul", email: "paul@gmail.com", mobile: "9889799977", country: "India", state: "Punjab", district: "Mohali" },
     { id: 2, name: "Anil", email: "anil@gmail.com", mobile: "9876543210", country: "India", state: "UP", district: "Lucknow" },
     { id: 3, name: "Ravi", email: "ravi@gmail.com", mobile: "9123456789", country: "India", state: "Bihar", district: "Patna" },

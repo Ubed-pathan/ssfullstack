@@ -1,11 +1,16 @@
 package com.ssbackend.ssbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "languages")
@@ -21,6 +26,4 @@ public class Language extends BaseEntity {
     @Column(nullable = false, unique = true, length = 80)
     private String name;
 
-    @Column(length = 10)
-    private String code;
 }

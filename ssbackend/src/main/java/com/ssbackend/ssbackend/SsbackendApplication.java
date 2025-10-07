@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SsbackendApplication {
 
 	public static void main(String[] args) {
+		// Ensure default JVM timezone is valid for Postgres if needed. Postgres rejects 'Asia/Calcutta'.
+		// java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone("Asia/Kolkata"));
 		SpringApplication.run(SsbackendApplication.class, args);
 	}
 

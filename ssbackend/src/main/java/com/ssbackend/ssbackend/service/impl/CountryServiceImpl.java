@@ -1,16 +1,18 @@
 package com.ssbackend.ssbackend.service.impl;
 
-import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
-import com.ssbackend.ssbackend.entity.Country;
-import com.ssbackend.ssbackend.repository.CountryRepository;
-import com.ssbackend.ssbackend.service.CountryService;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
+import com.ssbackend.ssbackend.entity.Country;
+import com.ssbackend.ssbackend.repository.CountryRepository;
+import com.ssbackend.ssbackend.service.CountryService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,6 @@ public class CountryServiceImpl implements CountryService {
         Country existing = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Country not found: " + id));
         existing.setName(c.getName());
-        existing.setCode(c.getCode());
         return repo.save(existing);
     }
 

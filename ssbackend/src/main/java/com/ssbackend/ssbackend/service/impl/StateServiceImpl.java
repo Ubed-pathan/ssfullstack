@@ -1,18 +1,20 @@
 package com.ssbackend.ssbackend.service.impl;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
 import com.ssbackend.ssbackend.entity.Country;
 import com.ssbackend.ssbackend.entity.State;
 import com.ssbackend.ssbackend.repository.CountryRepository;
 import com.ssbackend.ssbackend.repository.StateRepository;
 import com.ssbackend.ssbackend.service.StateService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +37,7 @@ public class StateServiceImpl implements StateService {
                 .orElseThrow(() -> new ResourceNotFoundException("State not found: " + id));
         Country country = countryRepo.findById(countryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Country not found: " + countryId));
-        existing.setName(s.getName());
-        existing.setCode(s.getCode());
+    existing.setName(s.getName());
         existing.setCountry(country);
         return stateRepo.save(existing);
     }

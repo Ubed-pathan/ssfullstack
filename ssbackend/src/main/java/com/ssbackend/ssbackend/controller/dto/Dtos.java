@@ -1,18 +1,28 @@
 package com.ssbackend.ssbackend.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class Dtos {
-    public record CountryCreateReq(@NotBlank String name, String code) {}
-    public record CountryUpdateReq(@NotBlank String name, String code) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record CountryCreateReq(@NotBlank String name) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record CountryUpdateReq(@NotBlank String name) {}
 
-    public record StateCreateReq(@NotBlank String name, String code, @NotNull Long countryId) {}
-    public record StateUpdateReq(@NotBlank String name, String code, @NotNull Long countryId) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record StateCreateReq(@NotBlank String name, @NotNull Long countryId) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record StateUpdateReq(@NotBlank String name, @NotNull Long countryId) {}
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record DistrictCreateReq(@NotBlank String name, @NotNull Long stateId) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record DistrictUpdateReq(@NotBlank String name, @NotNull Long stateId) {}
 
-    public record LanguageCreateReq(@NotBlank String name, String code) {}
-    public record LanguageUpdateReq(@NotBlank String name, String code) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record LanguageCreateReq(@NotBlank String name) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record LanguageUpdateReq(@NotBlank String name) {}
 }

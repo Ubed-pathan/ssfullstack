@@ -1,10 +1,21 @@
 package com.ssbackend.ssbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "states", indexes = {
@@ -22,8 +33,6 @@ public class State extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 10)
-    private String code;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

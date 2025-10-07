@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 function Country() {
-  const [countries, setCountries] = useState([]);
+  type CountryItem = { id: number; name: string; image?: string };
+  const [countries, setCountries] = useState<CountryItem[]>([]);
   const [id, setId] = useState(0);
   const [name, setName] = useState("");
   const [image, setImage] = useState<File | null>(null);
@@ -70,7 +71,7 @@ function Country() {
   };
 
   // Edit
-  const handleEdit = (country: any) => {
+  const handleEdit = (country: CountryItem) => {
     setId(country.id);
     setName(country.name);
   };
@@ -153,7 +154,7 @@ function Country() {
           </tr>
         </thead>
         <tbody>
-          {countries.map((c: any) => (
+          {countries.map((c: CountryItem) => (
             <tr key={c.id}>
               <td>{c.id}</td>
               <td>{c.name}</td>

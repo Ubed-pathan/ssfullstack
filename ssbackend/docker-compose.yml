@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:16
-    container_name: postgres_db1
+    image: postgres:latest
+    container_name: postgres_ss
     restart: unless-stopped
     env_file:
       - .env
