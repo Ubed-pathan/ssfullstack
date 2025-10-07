@@ -34,6 +34,14 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    public Country setImageUrl(Long id, String imageUrl) {
+        Country existing = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Country not found: " + id));
+        existing.setImageUrl(imageUrl);
+        return repo.save(existing);
+    }
+
+    @Override
     public void delete(Long id) {
         if (!repo.existsById(id)) throw new ResourceNotFoundException("Country not found: " + id);
         repo.deleteById(id);

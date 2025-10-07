@@ -1,26 +1,27 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import api from "../api/client";
 
 function Country() {
-  type CountryItem = { id: number; name: string; image?: string };
+  type CountryItem = { id: number; name: string; imageUrl?: string };
   const [countries, setCountries] = useState<CountryItem[]>([]);
   const [id, setId] = useState(0);
   const [name, setName] = useState("");
   const [image, setImage] = useState<File | null>(null);
   
-  const baseUrl = "https://localhost:7071/api/Countries";
-  const imageBasePath = "https://localhost:7071/api/Uploads";
 
   useEffect(() => {
     loadCountries();
   }, []);
 
   // Load countries
-  const loadCountries = () => {
-    axios.get(baseUrl).then((res) => {
-      setCountries(res.data);
-    });
+  const loadCountries = async () => {
+    try {
+      const res = await api.get(`/countries`, { params: { page: 0, size: 200 } });
+      setCountries(res?.data?.content ?? []);
+    } catch {
+      // silent
+    }
   };
 
   // Toast helper
@@ -37,36 +38,36 @@ function Country() {
   };
 
   // Save (Add/Update)
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("id", id.toString());
-    formData.append("name", name);
-    if (image) {
-      formData.append("image", image);
-    }
-
-    if (id === 0) {
-      axios
-        .post(baseUrl, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then(() => {
-          toast("success", "Country added");
-          resetForm();
-          loadCountries();
-        });
-    } else {
-      axios
-        .put(baseUrl, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then(() => {
-          toast("success", "Country updated");
-          resetForm();
-          loadCountries();
-        });
+    try {
+      if (id === 0) {
+        // Create country first
+        const createRes = await api.post(`/countries`, { name });
+        const created: CountryItem = createRes.data;
+        // If image selected, upload it
+        if (image) {
+          const fd = new FormData();
+          fd.append("file", image);
+          await api.post(`/countries/${created.id}/image`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+        }
+        toast("success", "Country added");
+      } else {
+        // Update country name
+        await api.put(`/countries/${id}`, { name });
+        // Optionally replace image
+        if (image) {
+          const fd = new FormData();
+          fd.append("file", image);
+          await api.post(`/countries/${id}/image`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+        }
+        toast("success", "Country updated");
+      }
+      resetForm();
+      loadCountries();
+    } catch {
+      toast("error", "Operation failed");
     }
   };
 
@@ -88,7 +89,7 @@ function Country() {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`${baseUrl}/${countryId}`).then(() => {
+        api.delete(`/countries/${countryId}`).then(() => {
           toast("success", "Country deleted");
           loadCountries();
         });
@@ -159,11 +160,15 @@ function Country() {
               <td>{c.id}</td>
               <td>{c.name}</td>
               <td>
-                <img
-                  src={`${imageBasePath}/${c.image}`}
-                  alt={c.name}
-                  style={{ width: "60px", height: "40px", objectFit: "cover" }}
-                />
+                {c.imageUrl ? (
+                  <img
+                    src={c.imageUrl}
+                    alt={c.name}
+                    style={{ width: "60px", height: "40px", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span>No image</span>
+                )}
               </td>
               <td>
                 <button

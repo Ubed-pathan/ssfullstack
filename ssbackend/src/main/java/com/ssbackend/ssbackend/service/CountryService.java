@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface CountryService {
     Country create(Country c);
     Country update(Long id, Country c);
+    Country setImageUrl(Long id, String imageUrl);
     void delete(Long id);
     Optional<Country> get(Long id);
     Page<Country> list(String q, Pageable pageable);
