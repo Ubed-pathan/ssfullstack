@@ -1,15 +1,16 @@
 package com.ssbackend.ssbackend.service;
 
-import com.ssbackend.ssbackend.entity.District;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
+import com.ssbackend.ssbackend.entity.District;
 
 public interface DistrictService {
-    District create(District d, Long stateId);
-    District update(Long id, District d, Long stateId);
+    District create(District d);
+    District update(Long id, District d);
     void delete(Long id);
     Optional<District> get(Long id);
-    Page<District> list(Long stateId, String q, Pageable pageable);
+    Page<District> list(String state, String q, Pageable pageable);
 }

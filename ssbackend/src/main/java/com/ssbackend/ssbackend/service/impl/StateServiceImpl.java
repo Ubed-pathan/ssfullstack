@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
-import com.ssbackend.ssbackend.entity.Country;
 import com.ssbackend.ssbackend.entity.State;
-import com.ssbackend.ssbackend.repository.CountryRepository;
 import com.ssbackend.ssbackend.repository.StateRepository;
 import com.ssbackend.ssbackend.service.StateService;
 
@@ -21,24 +19,16 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class StateServiceImpl implements StateService {
     private final StateRepository stateRepo;
-    private final CountryRepository countryRepo;
 
     @Override
-    public State create(State s, Long countryId) {
-        Country country = countryRepo.findById(countryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Country not found: " + countryId));
-        s.setCountry(country);
-        return stateRepo.save(s);
-    }
+    public State create(State s) { return stateRepo.save(s); }
 
     @Override
-    public State update(Long id, State s, Long countryId) {
+    public State update(Long id, State s) {
         State existing = stateRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("State not found: " + id));
-        Country country = countryRepo.findById(countryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Country not found: " + countryId));
-    existing.setName(s.getName());
-        existing.setCountry(country);
+                .orElseThrow(() -> new com.ssbackend.ssbackend.controller.ResourceNotFoundException("State not found: " + id));
+        existing.setName(s.getName());
+        existing.setCountry(s.getCountry());
         return stateRepo.save(existing);
     }
 
@@ -54,8 +44,8 @@ public class StateServiceImpl implements StateService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<State> list(Long countryId, String q, Pageable pageable) {
-        if (countryId != null) return stateRepo.findByCountry_Id(countryId, pageable);
+    public Page<State> list(String country, String q, Pageable pageable) {
+        if (country != null && !country.isBlank()) return stateRepo.findByCountryContainingIgnoreCase(country, pageable);
         if (q != null && !q.isBlank()) return stateRepo.findByNameContainingIgnoreCase(q, pageable);
         return stateRepo.findAll(pageable);
     }

@@ -1,42 +1,34 @@
 package com.ssbackend.ssbackend.service.impl;
 
-import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
-import com.ssbackend.ssbackend.entity.District;
-import com.ssbackend.ssbackend.entity.State;
-import com.ssbackend.ssbackend.repository.DistrictRepository;
-import com.ssbackend.ssbackend.repository.StateRepository;
-import com.ssbackend.ssbackend.service.DistrictService;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
+import com.ssbackend.ssbackend.entity.District;
+import com.ssbackend.ssbackend.repository.DistrictRepository;
+import com.ssbackend.ssbackend.service.DistrictService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class DistrictServiceImpl implements DistrictService {
     private final DistrictRepository districtRepo;
-    private final StateRepository stateRepo;
 
     @Override
-    public District create(District d, Long stateId) {
-        State state = stateRepo.findById(stateId)
-                .orElseThrow(() -> new ResourceNotFoundException("State not found: " + stateId));
-        d.setState(state);
-        return districtRepo.save(d);
-    }
+    public District create(District d) { return districtRepo.save(d); }
 
     @Override
-    public District update(Long id, District d, Long stateId) {
+    public District update(Long id, District d) {
         District existing = districtRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("District not found: " + id));
-        State state = stateRepo.findById(stateId)
-                .orElseThrow(() -> new ResourceNotFoundException("State not found: " + stateId));
         existing.setName(d.getName());
-        existing.setState(state);
+        existing.setState(d.getState());
         return districtRepo.save(existing);
     }
 
@@ -52,8 +44,8 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<District> list(Long stateId, String q, Pageable pageable) {
-        if (stateId != null) return districtRepo.findByState_Id(stateId, pageable);
+    public Page<District> list(String state, String q, Pageable pageable) {
+        if (state != null && !state.isBlank()) return districtRepo.findByStateContainingIgnoreCase(state, pageable);
         if (q != null && !q.isBlank()) return districtRepo.findByNameContainingIgnoreCase(q, pageable);
         return districtRepo.findAll(pageable);
     }

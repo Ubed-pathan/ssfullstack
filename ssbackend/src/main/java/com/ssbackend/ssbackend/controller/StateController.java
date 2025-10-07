@@ -32,14 +32,14 @@ public class StateController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public State create(@Valid @RequestBody StateCreateReq req) {
-        State s = State.builder().name(req.name()).build();
-        return service.create(s, req.countryId());
+        State s = State.builder().name(req.name()).country(req.country()).build();
+        return service.create(s);
     }
 
     @PutMapping("/{id}")
     public State update(@PathVariable Long id, @Valid @RequestBody StateUpdateReq req) {
-        State s = State.builder().name(req.name()).build();
-        return service.update(id, s, req.countryId());
+        State s = State.builder().name(req.name()).country(req.country()).build();
+        return service.update(id, s);
     }
 
     @DeleteMapping("/{id}")
@@ -52,11 +52,11 @@ public class StateController {
     }
 
     @GetMapping
-    public Page<State> list(@RequestParam(required = false) Long countryId,
+    public Page<State> list(@RequestParam(required = false) String country,
                             @RequestParam(required = false) String q,
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return service.list(countryId, q, pageable);
+        return service.list(country, q, pageable);
     }
 }

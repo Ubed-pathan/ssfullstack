@@ -21,14 +21,14 @@ public class DistrictController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public District create(@Valid @RequestBody DistrictCreateReq req) {
-        District d = District.builder().name(req.name()).build();
-        return service.create(d, req.stateId());
+        District d = District.builder().name(req.name()).state(req.state()).build();
+        return service.create(d);
     }
 
     @PutMapping("/{id}")
     public District update(@PathVariable Long id, @Valid @RequestBody DistrictUpdateReq req) {
-        District d = District.builder().name(req.name()).build();
-        return service.update(id, d, req.stateId());
+        District d = District.builder().name(req.name()).state(req.state()).build();
+        return service.update(id, d);
     }
 
     @DeleteMapping("/{id}")
@@ -41,11 +41,11 @@ public class DistrictController {
     }
 
     @GetMapping
-    public Page<District> list(@RequestParam(required = false) Long stateId,
+    public Page<District> list(@RequestParam(required = false) String state,
                                @RequestParam(required = false) String q,
                                @RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return service.list(stateId, q, pageable);
+        return service.list(state, q, pageable);
     }
 }
