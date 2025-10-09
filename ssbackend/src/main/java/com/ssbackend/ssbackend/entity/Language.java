@@ -27,5 +27,3 @@ public class Language extends BaseEntity {
     private String name;
 
 }
-
-
