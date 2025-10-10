@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,6 +44,24 @@ public class CustomerController {
     @GetMapping
     public List<Customer> list() {
         return service.findAll();
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Customer update(
+            @PathVariable Long id,
+            @RequestParam("name") String name,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "mobile", required = false) String mobile,
+            @RequestParam(value = "file", required = false) MultipartFile file
+    ) throws Exception {
+        String imageUrl = service.get(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + id))
+            .getImageUrl();
+        if (file != null && !file.isEmpty()) {
+            imageUrl = uploadService.uploadImage(file, "ssfullstack/customer images");
+        }
+        Customer c = Customer.builder().name(name).email(email).mobile(mobile).imageUrl(imageUrl).build();
+        return service.update(id, c);
     }
 
     @DeleteMapping("/{id}")

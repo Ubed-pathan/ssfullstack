@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssbackend.ssbackend.controller.ResourceNotFoundException;
 import com.ssbackend.ssbackend.entity.Student;
 import com.ssbackend.ssbackend.repository.StudentRepository;
 import com.ssbackend.ssbackend.service.StudentService;
@@ -29,7 +30,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student update(Long id, Student s) {
-        Student existing = repo.findById(id).orElseThrow(() -> new com.ssbackend.ssbackend.controller.ResourceNotFoundException("Student not found: " + id));
+        Student existing = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Student not found: " + id));
         existing.setName(s.getName());
         existing.setEmail(s.getEmail());
         existing.setMobile(s.getMobile());
@@ -42,9 +43,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void delete(Long id) {
-        if (!repo.existsById(id)) {
-            throw new com.ssbackend.ssbackend.controller.ResourceNotFoundException("Student not found: " + id);
-        }
+        if (!repo.existsById(id)) throw new ResourceNotFoundException("Student not found: " + id);
         repo.deleteById(id);
     }
 }
